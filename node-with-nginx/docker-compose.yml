@@ -1,0 +1,11 @@
+version: '3'
+services:
+  app:
+    image: qwsd7869/node-with-nginx # 指定 image
+    build: . # 指定 Dockerfile
+    environment: # 設定環境參數
+      NODE_ENV: production
+    ports: # 外部露出開放的 port 對應到 docker container 的 port
+      - '8888:80'
+    volumes: # 把當前資料夾 mount 掛載進去 container，這樣你可以直接在本地端專案資料夾改動檔案，container 裡面的檔案也會更動也不用重新 build image！
+      - .:/app

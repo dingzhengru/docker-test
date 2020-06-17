@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>Node With Nginx</h1>
+    <h1>Node With Nginx 123</h1>
   </div>
 </template>
 
