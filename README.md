@@ -81,6 +81,10 @@ docker run -d --name <container-name> -p <port>:<port> <專案名稱>
 docker run -d --name docker-test-container -p 50001:50001 docker-test
 ```
 
+## COPY 與 ADD 的差別
+參考: https://stackoverflow.com/a/26125419，Same as 'ADD', but without the tar and remote URL handling.  
+簡單來說，COPY 做的事情跟 ADD 一樣，但 COPY 不能處理 tar 與 url
+
 ## 指令
 
 ### build
