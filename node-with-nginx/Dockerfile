@@ -1,3 +1,4 @@
+# ---------- BUild -------------
 FROM node:lts as build-stage
 
 WORKDIR /app
@@ -10,8 +11,9 @@ COPY ./ /app
 
 RUN npm run build
 
-FROM nginx
+FROM nginx:alpine
 
+# ---------- Production -------------
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 EXPOSE 80
