@@ -1,25 +1,32 @@
+<!-- omit in toc -->
+
 # docker-test
 
 測試 docker 的專案
+
+<!-- omit in toc -->
 
 ## Image 與 Container
 
 **container 是 image 運行的 instance**，像是 object 是 class 的 instance
 
-- [Dockerfile](#dockerfile)
-  - [FROM](#from)
-  - [WORKDIR](#workdir)
-  - [安裝所需的檔案](#安裝所需的檔案)
-  - [設定忽略的檔案](#設定忽略的檔案)
-  - [聲明運行時容器提供的服務端口](#聲明運行時容器提供的服務端口)
-  - [設定預設指令](#設定預設指令)
-- [Build](#build)
-- [Run](#run)
-- [COPY 與 ADD 的差別](#copy-與-add-的差別)
-- [指令](#指令)
-  - [image](#image)
-  - [images](#images)
-  - [container](#container)
+- [docker-test](#docker-test)
+  - [Image 與 Container](#image-與-container)
+  - [Dockerfile](#dockerfile)
+    - [FROM](#from)
+    - [WORKDIR](#workdir)
+    - [安裝所需的檔案](#安裝所需的檔案)
+    - [設定忽略的檔案](#設定忽略的檔案)
+    - [聲明運行時容器提供的服務端口](#聲明運行時容器提供的服務端口)
+    - [設定預設指令](#設定預設指令)
+  - [Build](#build)
+  - [Run](#run)
+  - [COPY 與 ADD 的差別](#copy-與-add-的差別)
+  - [Docker Compose](#docker-compose)
+  - [指令](#指令)
+    - [image](#image)
+    - [images](#images)
+    - [container](#container)
 
 ## Dockerfile
 
@@ -97,6 +104,28 @@ docker run -d --name docker-test-container -p 50001:50001 docker-test
 
 參考: https://stackoverflow.com/a/26125419，Same as 'ADD', but without the tar and remote URL handling.  
 簡單來說，COPY 做的事情跟 ADD 一樣，但 COPY 不能處理 tar 與 url
+
+## Docker Compose
+
+跟 Dockerfile 的差異，參考文章: https://blog.techbridge.cc/2018/09/07/docker-compose-tutorial-intro/  
+Docker Compose 主要是用來描述 Service 之間的相依性和調度方式  
+Dockerfile 是用來描述映像檔（image）的文件
+
+範例檔案
+```yaml
+version: '3' # 目前使用的版本，可以參考官網：
+services: # services 關鍵字後面列出 web, redis 兩項專案中的服務
+  web:
+    build: . # Build 在同一資料夾的 Dockerfile（描述 Image 要組成的 yaml 檔案）成 container
+    ports:
+      - "5000:5000" # 外部露出開放的 port 對應到 docker container 的 port
+    volumes:
+      - .:/code # 要從本地資料夾 mount 掛載進去的資料
+    links:
+      - redis # 連結到 redis，讓兩個 container 可以互通網路
+  redis:
+    image: redis # 從 redis image build 出 container
+```
 
 ## 指令
 
