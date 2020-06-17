@@ -62,7 +62,11 @@ RUN npm install
 ## Build
 
 建立 image
+
 `docker build -t 專案名稱 .`
+
+- -t : image名字:image版本： 自訂image名字跟版本，若沒輸入版本則為預設值latest
+- . : Dockerfile的路徑
 
 ## Run
 
@@ -88,6 +92,7 @@ docker run -d --name docker-test-container -p 50001:50001 docker-test
 ## 指令
 
 ### build
+
 
 ### run
 
