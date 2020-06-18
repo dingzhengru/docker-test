@@ -2,10 +2,15 @@ import express from 'express';
 import cors from 'cors';
 import redis from 'redis';
 
-const port = 50001;
+const port = process.env.PORT || 50001;
 const app = express();
+let redisHostname = 'localhost';
 
-const redisClient = redis.createClient({ host: 'redis' });
+if (process.env.NODE_ENV == 'production') {
+  redisHostname = 'redis';
+}
+
+const redisClient = redis.createClient({ host: redisHostname });
 
 redisClient.on('error', error => {
   console.log('redis: GET ERROR');
@@ -40,5 +45,6 @@ app.get('/count', (req, res, next) => {
 });
 
 app.listen(port, () => {
+  console.log(process.env.NODE_ENV, process.env.PORT)
   console.log('listening on port', port);
 });

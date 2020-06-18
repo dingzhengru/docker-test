@@ -22,6 +22,8 @@
   - [Build](#build)
   - [Run](#run)
   - [COPY 與 ADD 的差別](#copy-與-add-的差別)
+  - [Dockerfile 其他參數](#dockerfile-其他參數)
+    - [ENV](#env)
   - [Docker Compose](#docker-compose)
   - [指令](#指令)
     - [image](#image)
@@ -104,6 +106,15 @@ docker run -d --name docker-test-container -p 50001:50001 docker-test
 
 參考: https://stackoverflow.com/a/26125419，Same as 'ADD', but without the tar and remote URL handling.  
 簡單來說，COPY 做的事情跟 ADD 一樣，但 COPY 不能處理 tar 與 url
+
+## Dockerfile 其他參數
+
+### ENV
+設定環境變數 `ENV key value`
+```
+ENV NODE_ENV production
+ENV PORT 50001
+```
 
 ## Docker Compose
 
