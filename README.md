@@ -128,9 +128,9 @@ services: # services 關鍵字後面列出 web, redis 兩項專案中的服務
     ports: # 外部露出開放的 port 對應到 docker container 的 port
       - '5000:5000'
     volumes: # 要從本地資料夾 mount 掛載進去的資料
-      - .:/code # 把當前資料夾 mount 掛載進去 container，這樣你可以直接在本地端專案資料夾改動檔案，container 裡面的檔案也會更動也不用重新 build image！
-    links: # 連結到 redis，讓兩個 container 可以互通網路，就可以直接連資料庫了
-      - redis
+      - .:/code # 把當前資料夾 mount 掛載進去 container，這樣你可以直接在本地端專案資料夾改動檔案，container 裡面的檔案也會更動也不用重新 build image
+    links: # 可以將服務定義別名，，預設網路是全服務都會連結在一起的，若不設定別名，可以不用填寫此設定 
+      - "redis:database" # 這樣在此服務連結 redis 就會從 redis.createClient({ host: 'redis' }) => redis.createClient({ host: 'database' })
   redis:
     image: redis # 從 redis image build 出 container
 ```
