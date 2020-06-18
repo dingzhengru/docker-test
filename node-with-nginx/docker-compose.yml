@@ -1,8 +1,9 @@
+# 串接、管理、描述多個 container 間的
 version: '3'
 services:
   app:
-    image: qwsd7869/node-with-nginx # 指定 image
-    build: . # 指定 Dockerfile
+    #image: qwsd7869/node-with-nginx # 指定 image，可以選擇只指定 image 或 只用 build 指定 Dockerfile，兩個一起設定也可以
+    build: . # 指定 Dockerfile 位置
     environment: # 設定環境參數
       NODE_ENV: production
     ports: # 外部露出開放的 port 對應到 docker container 的 port
