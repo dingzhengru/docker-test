@@ -1,41 +1,35 @@
-<!-- omit in toc -->
-
-# docker-test
+# docker-test <!-- omit in toc -->
 
 測試 docker 的專案
 
-<!-- omit in toc -->
-
-## Image 與 Container
+## Image 與 Container <!-- omit in toc -->
 
 **container 是 image 運行的 instance**，像是 object 是 class 的 instance
 
-- [docker-test](#docker-test)
-  - [Image 與 Container](#image-與-container)
-  - [Dockerfile](#dockerfile)
-    - [FROM](#from)
-    - [WORKDIR](#workdir)
-    - [安裝所需的檔案](#安裝所需的檔案)
-    - [設定忽略的檔案](#設定忽略的檔案)
-    - [聲明運行時容器提供的服務端口](#聲明運行時容器提供的服務端口)
-    - [設定預設指令](#設定預設指令)
-  - [Build](#build)
-  - [Run](#run)
-  - [COPY 與 ADD 的差別](#copy-與-add-的差別)
-  - [Dockerfile 其他參數](#dockerfile-其他參數)
-    - [ENV](#env)
-    - [ARG](#arg)
-    - [MAINTAINER](#maintainer)
-    - [LABEL](#label)
-    - [ENTRYPOINT](#entrypoint)
-    - [VOLUME](#volume)
-    - [USER](#user)
-    - [ONBUILD](#onbuild)
-  - [Docker Compose](#docker-compose)
-  - [指令](#指令)
-    - [image](#image)
-    - [images](#images)
-    - [container](#container)
+- [Dockerfile](#dockerfile)
+  - [FROM](#from)
+  - [WORKDIR](#workdir)
+  - [安裝所需的檔案](#安裝所需的檔案)
+  - [設定忽略的檔案](#設定忽略的檔案)
+  - [聲明運行時容器提供的服務端口](#聲明運行時容器提供的服務端口)
+  - [設定預設指令](#設定預設指令)
+- [Build](#build)
+- [Run](#run)
+- [COPY 與 ADD 的差別](#copy-與-add-的差別)
+- [Dockerfile 其他參數](#dockerfile-其他參數)
+  - [ENV](#env)
+  - [ARG](#arg)
+  - [MAINTAINER](#maintainer)
+  - [LABEL](#label)
+  - [ENTRYPOINT](#entrypoint)
+  - [VOLUME](#volume)
+  - [USER](#user)
+  - [ONBUILD](#onbuild)
+- [Docker Compose](#docker-compose)
+- [指令](#指令)
+  - [image](#image)
+  - [images](#images)
+  - [container](#container)
 
 ## Dockerfile
 
@@ -158,26 +152,32 @@ MAINTAINER John john@myemail.com
 ```
 
 ### LABEL
-設定映像檔的Metadata資訊，例如：作者、EMail、映像檔的說明等，`LABEL key=value`
 
+設定映像檔的 Metadata 資訊，例如：作者、EMail、映像檔的說明等，`LABEL key=value`
 
-``` dockerfile
+```dockerfile
 # 單行，空白隔開；也可以多行
 LABEL description="這是LABEL的範例" version="1.0" owner=""
 ```
 
 ### ENTRYPOINT
-和CMD一樣，用來設定映像檔啟動Container時要執行的指令，但不同的是，ENTRYPOINT一定會被執行，而不會有像CMD覆蓋的情況發生，用法跟 CMD 一樣
+
+和 CMD 一樣，用來設定映像檔啟動 Container 時要執行的指令，但不同的是，ENTRYPOINT 一定會被執行，而不會有像 CMD 覆蓋的情況發生，用法跟 CMD 一樣
 
 ### VOLUME
-建立本機或來自其他容器的掛載點，要特別注意的是使用VOLUME來定義掛載點時，是無法指定本機對應的目錄的，對應到哪個目錄是自動產生，我們可以透過docker inspect來查詢目錄資訊。  
+
+建立本機或來自其他容器的掛載點，要特別注意的是使用 VOLUME 來定義掛載點時，是無法指定本機對應的目錄的，對應到哪個目錄是自動產生，我們可以透過 docker inspect 來查詢目錄資訊。  
 **掛載也可以於 docker-compose.yml 設定**
+
 ```
 VOLUME ["/demo1","/demo2"] 或
 VOLUME /var/log /var/db
 ```
+
 ### USER
-指定運行Container時的用戶名稱或UID，在定義了USER後，則Dockerfile中的RUN、CMD、ENTRYPOINT等指令便會以USER指定的用戶來執行，前提條件是該用戶必需是已存在的，否則指定會失敗
+
+指定運行 Container 時的用戶名稱或 UID，在定義了 USER 後，則 Dockerfile 中的 RUN、CMD、ENTRYPOINT 等指令便會以 USER 指定的用戶來執行，前提條件是該用戶必需是已存在的，否則指定會失敗
+
 ```dockerfile
 # 指定用戶名稱
 USER tester
@@ -187,13 +187,15 @@ USER 1000
 ```
 
 ### ONBUILD
-若這個映像檔是作為其他映像檔的基底時，便需要定義ONBUILD指令，ONBUILD 後面接的指令在自建的映像檔中不會被執行，只有當這個映像檔是作為其他映像檔的基底時才會被觸發
+
+若這個映像檔是作為其他映像檔的基底時，便需要定義 ONBUILD 指令，ONBUILD 後面接的指令在自建的映像檔中不會被執行，只有當這個映像檔是作為其他映像檔的基底時才會被觸發
 
 ```dockerfile
 # 以下指令作為其他映像檔的基底時才會執行
 ONBUILD ADD . /home/tmp
 ONBUILD RUN mkdir -p /home/demo/docker
 ```
+
 ## Docker Compose
 
 跟 Dockerfile 的差異，參考文章: https://blog.techbridge.cc/2018/09/07/docker-compose-tutorial-intro/  
