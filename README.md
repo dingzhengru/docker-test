@@ -24,6 +24,13 @@
   - [COPY 與 ADD 的差別](#copy-與-add-的差別)
   - [Dockerfile 其他參數](#dockerfile-其他參數)
     - [ENV](#env)
+    - [ARG](#arg)
+    - [MAINTAINER](#maintainer)
+    - [LABEL](#label)
+    - [ENTRYPOINT](#entrypoint)
+    - [VOLUME](#volume)
+    - [USER](#user)
+    - [ONBUILD](#onbuild)
   - [Docker Compose](#docker-compose)
   - [指令](#指令)
     - [image](#image)
@@ -109,13 +116,84 @@ docker run -d --name docker-test-container -p 50001:50001 docker-test
 
 ## Dockerfile 其他參數
 
+參考文章: https://www.jinnsblog.com/2018/12/docker-dockerfile-guide.html
+
 ### ENV
+
 設定環境變數 `ENV key value`
+
 ```
 ENV NODE_ENV production
 ENV PORT 50001
 ```
 
+### ARG
+
+設定在建置映像檔時可傳入的參數，即定義變數名稱以及變數的預設值
+ARG 和 ENV 的功能類似，都可以設定變數，但是 ARG 設定的值是供 build 映像檔時使用
+在 Container 中是無法使用這些變數的
+
+```Dockerfile
+# 可選擇是否設定預設值，Param2 的預設值為 development
+ARG Param1
+ARG Param2=development
+
+# 使用變數
+ENV NODE_ENV ${Param2}
+```
+
+```bash
+# 設定 Param2 為 production => ENV NODE_ENV production
+docker build --build-arg Param2=production -t qwsd7869/test .
+```
+
+### MAINTAINER
+
+映像檔維護者，把它想成是作者即可，格式為`MAINTAINER name`
+
+```dockerfile
+MAINTAINER John 或
+MAINTAINER john@myemail.com 或
+MAINTAINER John john@myemail.com
+```
+
+### LABEL
+設定映像檔的Metadata資訊，例如：作者、EMail、映像檔的說明等，`LABEL key=value`
+
+
+``` dockerfile
+# 單行，空白隔開；也可以多行
+LABEL description="這是LABEL的範例" version="1.0" owner=""
+```
+
+### ENTRYPOINT
+和CMD一樣，用來設定映像檔啟動Container時要執行的指令，但不同的是，ENTRYPOINT一定會被執行，而不會有像CMD覆蓋的情況發生，用法跟 CMD 一樣
+
+### VOLUME
+建立本機或來自其他容器的掛載點，要特別注意的是使用VOLUME來定義掛載點時，是無法指定本機對應的目錄的，對應到哪個目錄是自動產生，我們可以透過docker inspect來查詢目錄資訊。  
+**掛載也可以於 docker-compose.yml 設定**
+```
+VOLUME ["/demo1","/demo2"] 或
+VOLUME /var/log /var/db
+```
+### USER
+指定運行Container時的用戶名稱或UID，在定義了USER後，則Dockerfile中的RUN、CMD、ENTRYPOINT等指令便會以USER指定的用戶來執行，前提條件是該用戶必需是已存在的，否則指定會失敗
+```dockerfile
+# 指定用戶名稱
+USER tester
+
+# 或使用UID來指定
+USER 1000
+```
+
+### ONBUILD
+若這個映像檔是作為其他映像檔的基底時，便需要定義ONBUILD指令，ONBUILD 後面接的指令在自建的映像檔中不會被執行，只有當這個映像檔是作為其他映像檔的基底時才會被觸發
+
+```dockerfile
+# 以下指令作為其他映像檔的基底時才會執行
+ONBUILD ADD . /home/tmp
+ONBUILD RUN mkdir -p /home/demo/docker
+```
 ## Docker Compose
 
 跟 Dockerfile 的差異，參考文章: https://blog.techbridge.cc/2018/09/07/docker-compose-tutorial-intro/  
@@ -125,6 +203,7 @@ Dockerfile 是用來描述映像檔（image）的文件
 執行 compose `docker-compose up -d`
 
 範例檔案 與 說明
+
 ```yaml
 version: '3' # 目前使用的版本，可以參考官網：
 services: # services 關鍵字後面列出 web, redis 兩項專案中的服務
@@ -133,11 +212,11 @@ services: # services 關鍵字後面列出 web, redis 兩項專案中的服務
     environment: # 設定環境參數
       NODE_ENV: production
     ports: # 外部露出開放的 port 對應到 docker container 的 port
-      - "5000:5000" 
+      - '5000:5000'
     volumes: # 要從本地資料夾 mount 掛載進去的資料
       - .:/code # 把當前資料夾 mount 掛載進去 container，這樣你可以直接在本地端專案資料夾改動檔案，container 裡面的檔案也會更動也不用重新 build image！
     links: # 連結到 redis，讓兩個 container 可以互通網路，就可以直接連資料庫了
-      - redis 
+      - redis
   redis:
     image: redis # 從 redis image build 出 container
 ```
