@@ -45,6 +45,6 @@ app.get('/count', (req, res, next) => {
 });
 
 app.listen(port, () => {
-  console.log(process.env.NODE_ENV, process.env.PORT)
+  console.log(process.env.NODE_ENV, process.env.PORT);
   console.log('listening on port', port);
 });

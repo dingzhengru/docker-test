@@ -13,9 +13,10 @@
   - [設定忽略的檔案](#設定忽略的檔案)
   - [聲明運行時容器提供的服務端口](#聲明運行時容器提供的服務端口)
   - [設定預設指令](#設定預設指令)
-- [Build](#build)
-- [Run](#run)
-- [COPY 與 ADD 的差別](#copy-與-add-的差別)
+  - [Build](#build)
+  - [Run](#run)
+  - [COPY 與 ADD 的差別](#copy-與-add-的差別)
+- [Docker Compose](#docker-compose)
 - [Dockerfile 其他參數](#dockerfile-其他參數)
   - [ENV](#env)
   - [ARG](#arg)
@@ -25,7 +26,6 @@
   - [VOLUME](#volume)
   - [USER](#user)
   - [ONBUILD](#onbuild)
-- [Docker Compose](#docker-compose)
 - [指令](#指令)
   - [image](#image)
   - [images](#images)
@@ -77,7 +77,7 @@ RUN npm install
 
 `CMD [ "npm", "start" ]`
 
-## Build
+### Build
 
 建立 image
 
@@ -86,7 +86,7 @@ RUN npm install
 - -t : image 名字:image 版本： 自訂 image 名字跟版本，若沒輸入版本則為預設值 latest
 - . : Dockerfile 的路徑
 
-## Run
+### Run
 
 執行 image
 
@@ -103,10 +103,37 @@ docker run -d --name <container-name> -p <port>:<port> <專案名稱>
 docker run -d --name docker-test-container -p 50001:50001 docker-test
 ```
 
-## COPY 與 ADD 的差別
+### COPY 與 ADD 的差別
 
 參考: https://stackoverflow.com/a/26125419，Same as 'ADD', but without the tar and remote URL handling.  
 簡單來說，COPY 做的事情跟 ADD 一樣，但 COPY 不能處理 tar 與 url
+
+## Docker Compose
+
+跟 Dockerfile 的差異，參考文章: https://blog.techbridge.cc/2018/09/07/docker-compose-tutorial-intro/  
+Docker Compose 執行多個 container，利用 docker-compose.yml 描述 Service 之間的關係，
+Dockerfile 是用來描述映像檔（image）的文件
+
+執行 compose `docker-compose up -d`
+
+範例檔案 與 說明
+
+```yaml
+version: '3' # 目前使用的版本，可以參考官網：
+services: # services 關鍵字後面列出 web, redis 兩項專案中的服務
+  web: # service 可以自己取名
+    build: . # Build 在同一資料夾的 Dockerfile（描述 Image 要組成的 yaml 檔案）成 container
+    environment: # 設定環境參數
+      NODE_ENV: production
+    ports: # 外部露出開放的 port 對應到 docker container 的 port
+      - '5000:5000'
+    volumes: # 要從本地資料夾 mount 掛載進去的資料
+      - .:/code # 把當前資料夾 mount 掛載進去 container，這樣你可以直接在本地端專案資料夾改動檔案，container 裡面的檔案也會更動也不用重新 build image！
+    links: # 連結到 redis，讓兩個 container 可以互通網路，就可以直接連資料庫了
+      - redis
+  redis:
+    image: redis # 從 redis image build 出 container
+```
 
 ## Dockerfile 其他參數
 
@@ -194,33 +221,6 @@ USER 1000
 # 以下指令作為其他映像檔的基底時才會執行
 ONBUILD ADD . /home/tmp
 ONBUILD RUN mkdir -p /home/demo/docker
-```
-
-## Docker Compose
-
-跟 Dockerfile 的差異，參考文章: https://blog.techbridge.cc/2018/09/07/docker-compose-tutorial-intro/  
-Docker Compose 執行多個 container，利用 docker-compose.yml 描述 Service 之間的關係，
-Dockerfile 是用來描述映像檔（image）的文件
-
-執行 compose `docker-compose up -d`
-
-範例檔案 與 說明
-
-```yaml
-version: '3' # 目前使用的版本，可以參考官網：
-services: # services 關鍵字後面列出 web, redis 兩項專案中的服務
-  web: # service 可以自己取名
-    build: . # Build 在同一資料夾的 Dockerfile（描述 Image 要組成的 yaml 檔案）成 container
-    environment: # 設定環境參數
-      NODE_ENV: production
-    ports: # 外部露出開放的 port 對應到 docker container 的 port
-      - '5000:5000'
-    volumes: # 要從本地資料夾 mount 掛載進去的資料
-      - .:/code # 把當前資料夾 mount 掛載進去 container，這樣你可以直接在本地端專案資料夾改動檔案，container 裡面的檔案也會更動也不用重新 build image！
-    links: # 連結到 redis，讓兩個 container 可以互通網路，就可以直接連資料庫了
-      - redis
-  redis:
-    image: redis # 從 redis image build 出 container
 ```
 
 ## 指令
