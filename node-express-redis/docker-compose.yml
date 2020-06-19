@@ -1,8 +1,9 @@
 version: '3'
-
 services:
   app:
     build: '.'
+    depends_on: # depends_on 表達依賴性，影響啟動、停止順序
+      - redis
     ports:
       - '50001:50001'
   redis:

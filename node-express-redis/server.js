@@ -13,7 +13,6 @@ if (process.env.NODE_ENV == 'production') {
 const redisClient = redis.createClient({ host: redisHostname });
 
 redisClient.on('error', error => {
-  console.log('redis: GET ERROR');
   console.error(error);
 });
 
