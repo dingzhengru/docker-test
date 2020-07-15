@@ -30,6 +30,8 @@
   - [image](#image)
   - [images](#images)
   - [container](#container)
+- [實做筆記](#實做筆記)
+  - [reverse-proxy-server](#reverse-proxy-server)
 
 ## Dockerfile
 
@@ -244,3 +246,9 @@ ONBUILD RUN mkdir -p /home/demo/docker
 - 參考: https://docs.docker.com/engine/reference/commandline/container_ls/
 - 查看，`docker container ls` 或 `docker container ls -a`
 - 刪除全部: `docker rm -vf $(docker ps -a -q)` 或 `docker rm -vf $(docker container ls -a -q)`，後面的語法是迭代器
+
+## 實做筆記
+
+### reverse-proxy-server
+測試反代理伺服器至 docker 裡運行，server 使用 nginx
+- resolver 錯誤: 至 nginx.conf 的 http 裡設定 resolver 即可，設定的 dns 位址可用 cat /etc/resolv.conf 查看
