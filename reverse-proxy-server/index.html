@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reverse Proxy Test</title>
+  </head>
+  <body>
+    <h1>Reverse Proxy Test123</h1>
+
+    <button onclick="sendRequest()">送請求</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+    <script>
+      const apiUrl = 'http://localhost:3000/api';
+
+      function sendRequest() {
+        const data = { siteID: 'C' };
+
+        axios.post(apiUrl + '/lang/GetList', data).then(result => {
+          console.log('result', result.data);
+        });
+
+        // axios.get(apiUrl + '/users').then(result => {
+        //   console.log('result', result.data);
+        // });
+      }
+    </script>
+  </body>
+</html>
