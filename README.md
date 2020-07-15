@@ -260,9 +260,22 @@ ONBUILD RUN mkdir -p /home/demo/docker
 
 至 nginx.conf 的 http 裡設定 resolver 即可，設定的 dns 位址可用 cat /etc/resolv.conf 查看
 
+```
+http {
+    resolver 192.168.65.1;
+}
+```
+
 #### nginx 的跨網域設定
 
 - 參考: https://enable-cors.org/server_nginx.html
+- 不用直接照抄下來，不過建議保留以下判斷
+
+```
+if ($request_method = 'OPTIONS') {
+    return 204;
+}
+```
 
 #### 設定多個網域至 Access-Control-Allow-Origin
 
