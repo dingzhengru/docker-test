@@ -32,6 +32,9 @@
   - [container](#container)
 - [實做筆記](#實做筆記)
   - [reverse-proxy-server](#reverse-proxy-server)
+    - [resolver 錯誤](#resolver-錯誤)
+    - [nginx 的跨網域設定](#nginx-的跨網域設定)
+    - [設定多個網域至 Access-Control-Allow-Origin](#設定多個網域至-access-control-allow-origin)
 
 ## Dockerfile
 
@@ -131,8 +134,8 @@ services: # services 關鍵字後面列出 web, redis 兩項專案中的服務
       - '5000:5000'
     volumes: # 要從本地資料夾 mount 掛載進去的資料
       - .:/code # 把當前資料夾 mount 掛載進去 container，這樣你可以直接在本地端專案資料夾改動檔案，container 裡面的檔案也會更動也不用重新 build image
-    links: # 可以將服務定義別名，，預設網路是全服務都會連結在一起的，若不設定別名，可以不用填寫此設定 
-      - "redis:database" # 這樣在此服務連結 redis 就會從 redis.createClient({ host: 'redis' }) => redis.createClient({ host: 'database' })
+    links: # 可以將服務定義別名，，預設網路是全服務都會連結在一起的，若不設定別名，可以不用填寫此設定
+      - 'redis:database' # 這樣在此服務連結 redis 就會從 redis.createClient({ host: 'redis' }) => redis.createClient({ host: 'database' })
   redis:
     image: redis # 從 redis image build 出 container
 ```
@@ -250,5 +253,25 @@ ONBUILD RUN mkdir -p /home/demo/docker
 ## 實做筆記
 
 ### reverse-proxy-server
+
 測試反代理伺服器至 docker 裡運行，server 使用 nginx
-- resolver 錯誤: 至 nginx.conf 的 http 裡設定 resolver 即可，設定的 dns 位址可用 cat /etc/resolv.conf 查看
+
+#### resolver 錯誤
+
+至 nginx.conf 的 http 裡設定 resolver 即可，設定的 dns 位址可用 cat /etc/resolv.conf 查看
+
+#### nginx 的跨網域設定
+
+- 參考: https://enable-cors.org/server_nginx.html
+
+#### 設定多個網域至 Access-Control-Allow-Origin
+
+- 參考: https://stackoverflow.com/a/36649003/5134658
+
+```
+location / {
+    if ($http_origin ~* "^https?://(website.com|www.website.com)$") {
+        add_header Access-Control-Allow-Origin "$http_origin";
+    }
+}
+```
